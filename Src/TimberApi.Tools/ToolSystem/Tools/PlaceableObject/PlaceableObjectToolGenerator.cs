@@ -8,37 +8,39 @@ using Timberborn.Wonders;
 
 namespace TimberApi.Tools.ToolSystem.Tools.PlaceableObject;
 
-public class PlaceableObjectToolGenerator(PrefabService prefabService) : ISpecificationGenerator
+public class PlaceableObjectToolGenerator(PrefabService prefabService) : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
-        foreach (var placeableBlockObject in prefabService.GetAll<PlaceableBlockObject>())
+        foreach (var placeableBlockObject in prefabService.GetAll<PlaceableBlockObjectSpec>())
         {
             if (!placeableBlockObject.UsableWithCurrentFeatureToggles) continue;
 
             var labeledEntitySpec = placeableBlockObject.GetComponentFast<LabeledEntitySpec>();
-            var prefab = placeableBlockObject.GetComponentFast<Prefab>();
-            var wonder = placeableBlockObject.GetComponentFast<Wonder>();
+            var prefab = placeableBlockObject.GetComponentFast<PrefabSpec>();
+            var wonder = placeableBlockObject.GetComponentFast<WonderSpec>();
             
             var json = JsonConvert.SerializeObject(new
             {
-                Id = prefab.PrefabName,
-                GroupId = placeableBlockObject.ToolGroupId,
-                Type = "PlaceableObjectTool",
-                Layout = !wonder ? "Default" : "WonderDefault",
-                Order = placeableBlockObject.ToolOrder,
-                Icon = labeledEntitySpec.ImagePath,
-                NameLocKey = labeledEntitySpec.DisplayNameLocKey,
-                labeledEntitySpec.DescriptionLocKey,
-                Hidden = false,
-                DevMode = placeableBlockObject.DevModeTool,
-                ToolInformation = new
+                ToolSpec = new
                 {
-                    prefab.PrefabName
+                    Id = prefab.PrefabName,
+                    GroupId = placeableBlockObject.ToolGroupId,
+                    Type = "PlaceableObjectTool",
+                    Layout = !wonder ? "Default" : "WonderDefault",
+                    Order = placeableBlockObject.ToolOrder,
+                    Icon = labeledEntitySpec.ImagePath,
+                    NameLocKey = labeledEntitySpec.DisplayNameLocKey,
+                    labeledEntitySpec.DescriptionLocKey,
+                    Hidden = false,
+                    DevMode = placeableBlockObject.DevModeTool,
+                },
+                PlaceableObjectToolSpec = new {
+                    PrefabName = prefab.PrefabName 
                 }
             });
 
-            yield return new GeneratedSpecification("Tools", $"ToolSpecification.{prefab.PrefabName}", json, true);
+            yield return new GeneratedSpec("Tools", $"Tool.{prefab.PrefabName}", json, true);
         }
     }
 }

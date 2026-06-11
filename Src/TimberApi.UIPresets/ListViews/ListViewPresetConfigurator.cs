@@ -5,10 +5,10 @@ namespace TimberApi.UIPresets.ListViews;
 [Context("MainMenu")]
 [Context("MapEditor")]
 [Context("Game")]
-public class ListViewPresetConfigurator : IConfigurator
+public class ListViewPresetConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<DefaultListView>().AsTransient();
+        Bind<DefaultListView>().AsTransient();
     }
 }

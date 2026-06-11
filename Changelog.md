@@ -1,3 +1,11 @@
+## 0.7.12.0
+- Updated for update 7.2
+- Fixed bottombar wonder icon
+
+## 0.7.9.0
+- Disabled `BottomBarSystem`, `Tools` & `BuildingSpecificationSsystem` for update 7.
+- Updated `TimberApi`, `EntityLinkerSystem`, `SpecificationSystem`, `UIBuilderSystem`, `UIPresets` for update 7.
+
 ## 0.7.8.0
 - Added `Scenes` to `ToolSpecification` to specify in which scene the tool should be loaded `Game` is default.
 - Added `GenericTool` tool factory type to make compatibility without hard dependency possible for custom mod tools. 
@@ -68,7 +76,7 @@
 - Added BottomBarRework.
 - Added ToolSpecifications.
 - Enhanced ToolGroupSpecifications.
-- Added Code SpecificationGeneration `ISpecificationGenerator`.
+- Added Code SpecificationGeneration `ISpecGenerator`.
 - Added `SceneManager`.
 - Enhanced SingletonSystem (`IEarlyLoadableSingleton`, `ILateLoadableSingleton`).
 - Extended `IObjectLoader` with more default fallbacks.

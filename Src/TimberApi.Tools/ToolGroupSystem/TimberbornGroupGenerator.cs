@@ -1,45 +1,56 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using TimberApi.SpecificationSystem;
-
+using Timberborn.BlueprintSystem;
 namespace TimberApi.Tools.ToolGroupSystem;
 
-public class TimberbornGroupGenerator : ISpecificationGenerator
+public class TimberbornGroupGenerator(ISpecService specService) : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
-        yield return MapEditorGroupDevelopment();
-        yield return RuinsGroupDevelopment();
-        yield return OtherGroupHidden();
+        // TODO: Double generated spec is not possible, it should be possible if it's not a object spec.
+        // yield return MapEditorGroupDevelopment();
+        // yield return RuinsGroupDevelopment();
+        // yield return OtherGroupHidden();
+        yield break;
     }
-
-    private static GeneratedSpecification MapEditorGroupDevelopment()
+    
+    private static GeneratedSpec MapEditorGroupDevelopment()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            DevMode = true
+            TimberApiToolGroupSpec = new
+            {
+                DevMode = true,
+            },
         });
-
-        return new GeneratedSpecification(json, "MapEditor", "ToolGroupSpecification");
+        
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroup.MapEditor", json);
     }
 
-    private static GeneratedSpecification RuinsGroupDevelopment()
+    private static GeneratedSpec RuinsGroupDevelopment()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            DevMode = true
+            TimberApiToolGroupSpec = new
+            {
+                DevMode = false,
+            }
         });
 
-        return new GeneratedSpecification(json, "Ruins", "ToolGroupSpecification");
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroup.Ruins", json);
     }
 
-    private static GeneratedSpecification OtherGroupHidden()
+    private static GeneratedSpec OtherGroupHidden()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Hidden = true
+            TimberApiToolGroupSpec = new
+            {
+                Hidden = true,
+            }
         });
 
-        return new GeneratedSpecification(json, "Other", "ToolGroupSpecification");
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroup.Other", json);
     }
 }

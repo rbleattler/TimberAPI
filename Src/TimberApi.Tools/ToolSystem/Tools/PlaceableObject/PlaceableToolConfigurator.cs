@@ -4,11 +4,11 @@ using TimberApi.SpecificationSystem;
 namespace TimberApi.Tools.ToolSystem.Tools.PlaceableObject;
 
 [Context("Game")]
-public class PlaceableToolConfigurator : IConfigurator
+public class PlaceableToolConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.MultiBind<IToolFactory>().To<PlaceableObjectToolFactory>().AsSingleton();
-        containerDefinition.MultiBind<ISpecificationGenerator>().To<PlaceableObjectToolGenerator>().AsSingleton();
+        MultiBind<IToolFactory>().To<PlaceableObjectToolFactory>().AsSingleton();
+        MultiBind<ISpecGenerator>().To<PlaceableObjectToolGenerator>().AsSingleton();
     }
 }

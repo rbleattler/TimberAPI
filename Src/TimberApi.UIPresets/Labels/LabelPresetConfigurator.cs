@@ -5,11 +5,11 @@ namespace TimberApi.UIPresets.Labels;
 [Context("MainMenu")]
 [Context("MapEditor")]
 [Context("Game")]
-public class LabelPresetConfigurator : IConfigurator
+public class LabelPresetConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<GameLabel>().AsTransient();
-        containerDefinition.Bind<GameTextLabel>().AsTransient();
+        Bind<GameLabel>().AsTransient();
+        Bind<GameTextLabel>().AsTransient();
     }
 }

@@ -5,11 +5,11 @@ namespace TimberApi.UIPresets.Builders;
 [Context("Game")]
 [Context("MainMenu")]
 [Context("MapEditor")]
-public class UIBuilderConfigurator : IConfigurator
+public class UIBuilderConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<FragmentBuilder>().AsTransient();
-        containerDefinition.Bind<BoxBuilder>().AsTransient();
+        Bind<FragmentBuilder>().AsTransient();
+        Bind<BoxBuilder>().AsTransient();
     }
 }

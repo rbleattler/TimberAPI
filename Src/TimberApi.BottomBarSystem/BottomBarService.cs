@@ -1,23 +1,25 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using TimberApi.SpecificationSystem;
+using TimberApi.Tools.ToolGroupSystem;
 using TimberApi.Tools.ToolSystem;
 using Timberborn.SingletonSystem;
-using ToolGroupSpecification = TimberApi.Tools.ToolGroupSystem.ToolGroupSpecification;
-using ToolGroupSpecificationService = TimberApi.Tools.ToolGroupSystem.ToolGroupSpecificationService;
+using UnityEngine;
+using ToolGroupSpecService = TimberApi.Tools.ToolGroupSystem.ToolGroupSpecService;
 
 namespace TimberApi.BottomBarSystem;
 
 public class BottomBarService(
-    ToolGroupSpecificationService toolGroupSpecificationService,
-    ToolSpecificationService toolSpecificationService)
+    ToolGroupSpecService toolGroupSpecService,
+    ToolSpecService toolSpecService)
     : ILoadableSingleton
 {
     private static readonly string BottomBarSection = "BottomBar";
 
     private readonly Dictionary<string, int> _toolGroupRows = new();
 
-    private ImmutableDictionary<string, ToolGroupSpecification> _toolGroupSpecifications = null!;
+    private ImmutableDictionary<string, TimberApiToolGroupSpec> _toolGroupSpecs = null!;
 
     private ImmutableArray<BottomBarButton> _toolItemButtons;
 
@@ -25,39 +27,38 @@ public class BottomBarService(
 
     public void Load()
     {
-        _toolGroupSpecifications = toolGroupSpecificationService
+        _toolGroupSpecs = toolGroupSpecService
             .GetBySection(BottomBarSection)
-            .ToImmutableDictionary(specification => specification.Id);
+            .ToImmutableDictionary(spec => spec.Id);
 
         _toolItemButtons = CreateItemButtons().ToImmutableArray().Sort();
     }
 
-
     private IEnumerable<BottomBarButton> CreateItemButtons()
     {
-        foreach (var specification in _toolGroupSpecifications.Select(pair => pair.Value))
+        foreach (var toolGroupSpec in _toolGroupSpecs.Select(pair => pair.Value))
         {
-            _toolGroupRows.Add(specification.Id.ToLower(), CalculateGroupRow(specification));
-
+            _toolGroupRows.Add(toolGroupSpec.Id.ToLower(), CalculateGroupRow(toolGroupSpec));
+            
             yield return new BottomBarButton(
-                specification.Id,
+                toolGroupSpec.GetSpecOrDefault<BottomBarSpec>(),
+                toolGroupSpec.Id,
                 true,
-                specification.GroupId,
-                specification.Hidden,
-                specification.Order,
-                specification.GroupInformation
+                toolGroupSpec.GroupId,
+                toolGroupSpec.Hidden,
+                toolGroupSpec.Order
             );
         }
+        
 
-        foreach (var specification in toolSpecificationService.GetBySection("BottomBar"))
+        foreach (var toolSpec in toolSpecService.GetBySection("BottomBar"))
             yield return new BottomBarButton(
-                specification.Id,
+                toolSpec.GetSpec<BottomBarSpec>(),
+                toolSpec.Id,
                 false,
-                specification.GroupId,
-                specification.Hidden,
-                specification.Order,
-                specification.ToolInformation
-            );
+                toolSpec.GroupId,
+                toolSpec.Hidden,
+                toolSpec.Order);
     }
 
     public int GetGroupRow(string groupId)
@@ -68,13 +69,13 @@ public class BottomBarService(
         return row;
     }
 
-    private int CalculateGroupRow(ToolGroupSpecification toolGroupSpecification)
+    private int CalculateGroupRow(TimberApiToolGroupSpec toolGroupSpec)
     {
         var row = 0;
 
-        while (toolGroupSpecification.GroupId != null)
+        while (toolGroupSpec.GroupId != null)
         {
-            toolGroupSpecification = _toolGroupSpecifications[toolGroupSpecification.GroupId];
+            toolGroupSpec = _toolGroupSpecs[toolGroupSpec.GroupId];
             row += 1;
         }
 

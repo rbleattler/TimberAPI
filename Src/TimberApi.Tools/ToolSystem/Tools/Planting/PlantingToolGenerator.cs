@@ -7,43 +7,46 @@ using Timberborn.Fields;
 using Timberborn.NaturalResources;
 using Timberborn.Planting;
 using Timberborn.PrefabSystem;
+using UnityEngine;
 
 namespace TimberApi.Tools.ToolSystem.Tools.Planting;
 
-public class PlantingToolGenerator(PrefabService prefabService) : ISpecificationGenerator
+public class PlantingToolGenerator(PrefabService prefabService) : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
-        var plantables = prefabService.GetAll<Plantable>().ToList();
+        var plantables = prefabService.GetAll<PlantableSpec>().ToList();
         
         foreach (var plantable in plantables)
         {
             var labeledEntitySpec = plantable.GetComponentFast<LabeledEntitySpec>();
             
-            var prefab = plantable.GetComponentFast<Prefab>();
+            var prefab = plantable.GetComponentFast<PrefabSpec>();
 
-            var isCrop = plantable.GetComponentFast<Crop>() != null;
-            var naturalResource = plantable.GetComponentFast<NaturalResource>();
-
+            var isCrop = plantable.GetComponentFast<CropSpec>() != null;
+            var naturalResource = plantable.GetComponentFast<NaturalResourceSpec>();
+            
             var json = JsonConvert.SerializeObject(new
             {
-                Id = plantable.PrefabName,
-                GroupId = isCrop ? "Fields" : "Forestry",
-                Type = "PlantingTool",
-                Layout = "Default",
-                Order = naturalResource.OrderId,
-                Icon = labeledEntitySpec.ImagePath,
-                NameLocKey = labeledEntitySpec.DisplayNameLocKey,
-                labeledEntitySpec.DescriptionLocKey,
-                Hidden = false,
-                DevMode = false,
-                ToolInformation = new
+                ToolSpec = new
                 {
-                    prefab.PrefabName
+                    Id = plantable.PrefabName,
+                    GroupId = isCrop ? "Fields" : "Forestry",
+                    Type = "PlantingTool",
+                    Layout = "Default",
+                    Order = naturalResource.Order,
+                    Icon = labeledEntitySpec.ImagePath,
+                    NameLocKey = labeledEntitySpec.DisplayNameLocKey,
+                    labeledEntitySpec.DescriptionLocKey,
+                    Hidden = false,
+                    DevMode = false,
+                },
+                PlantingToolSpec = new {
+                    PrefabName = prefab.PrefabName 
                 }
             });
 
-            yield return new GeneratedSpecification("Tools", $"ToolSpecification.{plantable.PrefabName}", json, true);
+            yield return new GeneratedSpec("Tools", $"Tool.{plantable.PrefabName}", json, true);
         }
 
         yield return CreateFieldsToolGroupSpecification();
@@ -51,50 +54,56 @@ public class PlantingToolGenerator(PrefabService prefabService) : ISpecification
         yield return CreateForestryPlantingToolGroupSpecification();
     }
 
-    private static GeneratedSpecification CreateFieldsToolGroupSpecification()
+    private static GeneratedSpec CreateFieldsToolGroupSpecification()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "Fields",
-            Layout = "Blue",
-            Order = 20,
-            Type = "PlantingModeToolGroup",
-            NameLocKey = "ToolGroups.FieldsPlanting",
-            Icon = "Sprites/BottomBar/FieldsPlantingToolGroupIcon",
-            Section = "BottomBar",
-            DevMode = false,
-            Hidden = false,
-            FallbackGroup = false,
-            GroupInformation = new
+            TimberApiToolGroupSpec = new
             {
-                BottomBarSection = 0
+                Id = "Fields",
+                Order = 20,
+                NameLocKey = "ToolGroups.FieldsPlanting",
+                Icon = "Sprites/BottomBar/FieldsPlantingToolGroupIcon",
+                FallbackGroup = false,
+                Type = "PlantingModeToolGroup",
+                Layout = "Blue",
+                Section = "BottomBar",
+                DevMode = false,
+                Hidden = false,
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
             }
         });
 
 
-        return new GeneratedSpecification("Tools", "ToolGroupSpecification.Fields", json);
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroups.Fields", json);
     }
 
-    private static GeneratedSpecification CreateForestryPlantingToolGroupSpecification()
+    private static GeneratedSpec CreateForestryPlantingToolGroupSpecification()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "Forestry",
-            Layout = "Blue",
-            Order = 30,
-            Type = "PlantingModeToolGroup",
-            NameLocKey = "ToolGroups.ForestryPlanting",
-            Icon = "Sprites/BottomBar/ForestryPlantingToolGroupIcon",
-            Section = "BottomBar",
-            DevMode = false,
-            Hidden = false,
-            FallbackGroup = false,
-            GroupInformation = new
+            TimberApiToolGroupSpec = new
             {
-                BottomBarSection = 0
+                Id = "Forestry",
+                Order = 30,
+                NameLocKey = "ToolGroups.ForestryPlanting",
+                Icon = "Sprites/BottomBar/ForestryPlantingToolGroupIcon",
+                FallbackGroup = false,
+                Type = "PlantingModeToolGroup",
+                Layout = "Blue",
+                Section = "BottomBar",
+                DevMode = false,
+                Hidden = false,
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
             }
         });
 
-        return new GeneratedSpecification("Tools", "ToolGroupSpecification.Forestry", json);
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroups.Forestry", json);
     }
 }

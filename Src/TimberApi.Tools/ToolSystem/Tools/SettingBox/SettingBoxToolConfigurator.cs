@@ -4,11 +4,11 @@ using TimberApi.SpecificationSystem;
 namespace TimberApi.Tools.ToolSystem.Tools.SettingBox;
 
 [Context("Game")]
-public class SettingBoxToolConfigurator : IConfigurator
+public class SettingBoxToolConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<SettingBoxTool>().AsSingleton();
-        containerDefinition.MultiBind<ISpecificationGenerator>().To<SettingBoxToolGenerator>().AsSingleton();
+        Bind<SettingBoxTool>().AsSingleton();
+        MultiBind<ISpecGenerator>().To<SettingBoxToolGenerator>().AsSingleton();
     }
 }

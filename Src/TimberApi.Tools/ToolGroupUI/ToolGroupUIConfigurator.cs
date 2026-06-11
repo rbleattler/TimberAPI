@@ -5,15 +5,15 @@ namespace TimberApi.Tools.ToolGroupUI;
 
 [Context("Game")]
 [Context("MapEditor")]
-public class ToolGroupUIConfigurator : IConfigurator
+public class ToolGroupUIConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<ToolGroupButtonFactoryService>().AsSingleton();
-        containerDefinition.Bind<ToolGroupButtonFactory>().AsSingleton();
-        containerDefinition.MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonRedFactory>().AsSingleton();
-        containerDefinition.MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonBrownFactory>().AsSingleton();
-        containerDefinition.MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonBlueFactory>().AsSingleton();
-        containerDefinition.MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonGreenFactory>().AsSingleton();
+        Bind<ToolGroupButtonFactoryService>().AsSingleton();
+        Bind<ToolGroupButtonFactory>().AsSingleton();
+        MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonRedFactory>().AsSingleton();
+        MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonBrownFactory>().AsSingleton();
+        MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonBlueFactory>().AsSingleton();
+        MultiBind<IToolGroupButtonFactory>().To<ToolGroupButtonGreenFactory>().AsSingleton();
     }
 }

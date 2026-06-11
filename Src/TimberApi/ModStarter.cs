@@ -10,13 +10,13 @@ namespace TimberApi;
 
 public class ModStarter : IModStarter
 {
-    public void StartMod()
+    public void StartMod(IModEnvironment modEnvironment)
     {
         try
         {
             var harmony = new Harmony("TimberApi");
 
-            SceneManager.Patch(harmony);
+            ContextManager.Patch(harmony);
 
             harmony.Patch(
                 harmony.GetMethodInfo<SingletonLifecycleService>(nameof(SingletonLifecycleService.LoadAll)),

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Timberborn.SingletonSystem;
+using UnityEngine;
 
 // ReSharper disable InconsistentNaming
 
@@ -12,6 +13,7 @@ internal class SingletonLifecycleServicePatcher
     {
         LoadSingleton(____singletonRepository.GetSingletons<ITimberApiLoadableSingleton>(),
             singleton => singleton.Load());
+        
         LoadSingleton(____singletonRepository.GetSingletons<ITimberApiPostLoadableSingleton>(),
             singleton => singleton.PostLoad());
     }

@@ -11,22 +11,24 @@ public class ModStarter : IModStarter
 {
     private static Harmony _harmony = null!;
 
-    public void StartMod()
+    public void StartMod(IModEnvironment modEnvironment)
     {
         _harmony = new Harmony("TimberApi.BottomBar");
-        SceneManager.SceneChanged += SceneManagerOnSceneChanged;
+        ContextManager.ContextChanged += SceneManagerOnContextChanged;
     }
 
-    private void SceneManagerOnSceneChanged(Scene previousscene, Scene currentscene,
-        IContainerDefinition currentcontainerdefinition)
+    private void SceneManagerOnContextChanged(string previousscene, string currentscene)
     {
-        if (currentscene != Scene.Game)
+        if (currentscene != "Game")
         {
             _harmony.UnpatchAll("TimberApi.BottomBar");
             return;
         }
 
-        if (previousscene == Scene.Game) return;
+        if (previousscene == "Game")
+        {
+            return;
+        }
 
         try
         {

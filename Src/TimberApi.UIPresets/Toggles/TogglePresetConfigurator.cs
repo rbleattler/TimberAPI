@@ -5,14 +5,14 @@ namespace TimberApi.UIPresets.Toggles;
 [Context("MainMenu")]
 [Context("MapEditor")]
 [Context("Game")]
-public class TogglePresetConfigurator : IConfigurator
+public class TogglePresetConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<GameToggle>().AsTransient();
-        containerDefinition.Bind<GameTextToggle>().AsTransient();
+        Bind<GameToggle>().AsTransient();
+        Bind<GameTextToggle>().AsTransient();
         
-        containerDefinition.Bind<SettingToggle>().AsTransient();
-        containerDefinition.Bind<SettingTextToggle>().AsTransient();
+        Bind<SettingToggle>().AsTransient();
+        Bind<SettingTextToggle>().AsTransient();
     }
 }

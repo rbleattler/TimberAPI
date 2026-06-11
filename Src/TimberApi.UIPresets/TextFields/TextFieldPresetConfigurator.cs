@@ -5,10 +5,10 @@ namespace TimberApi.UIPresets.TextFields;
 [Context("MainMenu")]
 [Context("MapEditor")]
 [Context("Game")]
-public class TextFieldPresetConfigurator : IConfigurator
+public class TextFieldPresetConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<DefaultTextField>().AsTransient();
+        Bind<DefaultTextField>().AsTransient();
     }
 }

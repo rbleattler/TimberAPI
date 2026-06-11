@@ -4,33 +4,38 @@ using TimberApi.SpecificationSystem;
 
 namespace TimberApi.Tools.ToolSystem.Tools.SettingBox;
 
-public class SettingBoxToolGenerator : ISpecificationGenerator
+public class SettingBoxToolGenerator : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
         yield return SettingBoxTool();
     }
 
-    private static GeneratedSpecification SettingBoxTool()
+    private static GeneratedSpec SettingBoxTool()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "SettingBox",
-            Type = "GenericTool",
-            Layout = "GrouplessRed",
-            Order = 1000,
-            NameLocKey = "CAN NOT BE MODIFIED",
-            DescriptionLocKey = "CAN NOT BE MODIFIED",
-            Icon = "Sprites/BottomBar/Options",
-            DevMode = false,
-            Hidden = false,
-            ToolInformation = new
+            ToolSpec = new
             {
-                BottomBarSection = 2,
+                Id = "SettingBox",
+                Type = "GenericTool",
+                Layout = "GrouplessRed",
+                Order = 1000,
+                NameLocKey = "Tool.FixedName",
+                DescriptionLocKey = "Tool.FixedDescription",
+                Icon = "Sprites/BottomBar/Options",
+                DevMode = false,
+                Hidden = false,
+            },
+            GenericToolSpec = new {
                 ClassName = typeof(SettingBoxTool).FullName
-            }
+            },
+            BottomBarSpec = new
+            {
+                Section = 2,
+            },
         });
 
-        return new GeneratedSpecification("Tools", "ToolSpecification.SettingBox", json);
+        return new GeneratedSpec("Tools", "Tool.SettingBox", json);
     }
 }

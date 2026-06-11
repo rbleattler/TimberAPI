@@ -1,55 +1,43 @@
+using System;
 using System.Linq;
 using Timberborn.AreaSelectionSystem;
 using Timberborn.BlockObjectTools;
 using Timberborn.BlockSystem;
 using Timberborn.InputSystem;
-using Timberborn.Persistence;
 using Timberborn.PrefabSystem;
 using Timberborn.ToolSystem;
 using Timberborn.UISound;
+using UnityEngine;
 
 namespace TimberApi.Tools.ToolSystem.Tools.PlaceableObject;
 
 public class PlaceableObjectToolFactory(
     PrefabService prefabService,
-    InputService inputService,
-    PreviewPlacerFactory previewPlacerFactory,
-    UISoundController uiSoundController,
-    ToolUnlockingService toolUnlockingService,
     BlockObjectToolDescriber blockObjectToolDescriber,
-    AreaPickerFactory areaPickerFactory,
-    BlockObjectPlacerService blockObjectPlacerService)
-    : BaseToolFactory<PlaceableObjectToolToolInformation>
+    BlockObjectPlacerService blockObjectPlacerService,
+    BlockObjectToolFactory blockObjectToolFactory) : IToolFactory
 {
-    public override string Id => "PlaceableObjectTool";
-
-    protected override Tool CreateTool(ToolSpecification toolSpecification,
-        PlaceableObjectToolToolInformation toolInformation, ToolGroup? toolGroup)
+    public string Id => "PlaceableObjectTool";
+    
+    public Tool Create(ToolSpec toolSpec, ToolGroup? toolGroup = null)
     {
-        var prefab = prefabService.GetAll<Prefab>().Single(o => o.IsNamed(toolInformation.PrefabName));
-        var placeableBlockObject = prefab.GetComponentFast<PlaceableBlockObject>();
+        var placeableObjectToolSpec = toolSpec.GetSpec<PlaceableObjectToolSpec>();
 
-        placeableBlockObject._devModeTool = toolSpecification.DevMode;
-        placeableBlockObject._toolOrder = toolSpecification.Order;
+        var prefab = prefabService.GetAll<PrefabSpec>().Single(o => o.IsNamed(placeableObjectToolSpec.PrefabName));
         
-        var matchingPlacer = blockObjectPlacerService.GetMatchingPlacer(prefab.GetComponentFast<BlockObject>());
-        var previewPlacer = previewPlacerFactory.Create(placeableBlockObject);
+        var placeableBlockObject = prefab.GetComponentFast<PlaceableBlockObjectSpec>();
+
+        placeableBlockObject._devModeTool = toolSpec.DevMode;
+        placeableBlockObject._toolOrder = toolSpec.Order;
         
-        return new BlockObjectTool(
+        var matchingPlacer = blockObjectPlacerService.GetMatchingPlacer(prefab.GetComponentFast<BlockObjectSpec>());
+        // var previewPlacer = previewPlacerFactory.Create(placeableBlockObject);
+
+        return blockObjectToolFactory.Create(
             placeableBlockObject,
-            toolGroup,
-            inputService,
-            areaPickerFactory,
-            uiSoundController,
-            toolUnlockingService,
             matchingPlacer,
             blockObjectToolDescriber,
-            previewPlacer
-        );
-    }
+            toolGroup);
 
-    protected override PlaceableObjectToolToolInformation DeserializeToolInformation(IObjectLoader objectLoader)
-    {
-        return new PlaceableObjectToolToolInformation(objectLoader.Get(new PropertyKey<string>("PrefabName")));
     }
 }

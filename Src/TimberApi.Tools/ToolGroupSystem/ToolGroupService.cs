@@ -3,12 +3,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using TimberApi.Tools.ToolGroupUI;
 using Timberborn.SingletonSystem;
+using Timberborn.ToolButtonSystem;
 using Timberborn.ToolSystem;
 
 namespace TimberApi.Tools.ToolGroupSystem;
 
 public class ToolGroupService(
-    ToolGroupSpecificationService toolGroupSpecificationService,
+    ToolGroupSpecService toolGroupSpecService,
     ToolGroupButtonFactoryService toolGroupButtonFactoryService,
     ToolGroupFactoryService toolGroupFactoryService)
     : ILoadableSingleton
@@ -28,15 +29,14 @@ public class ToolGroupService(
 
         var toolGroupButtons = new Dictionary<string, ToolGroupButton>();
 
-        foreach (var toolGroupSpecification in toolGroupSpecificationService.ToolGroupSpecifications
-                     .OrderBy(x => x.Layout).ThenBy(x => x.Order))
+        foreach (var toolGroupSpecification in toolGroupSpecService.ToolGroupSpecs.OrderBy(x => x.Layout).ThenBy(x => x.Order))
         {
             var toolGroup = toolGroupFactoryService.Get(toolGroupSpecification.Type).Create(toolGroupSpecification);
 
             toolGroups.Add(toolGroupSpecification.Id.ToLower(), toolGroup);
 
-            var button = toolGroupButtonFactoryService.Get(toolGroupSpecification.Layout)
-                .Create(toolGroup, toolGroupSpecification);
+            var button = toolGroupButtonFactoryService.Get(toolGroupSpecification.Layout).Create(toolGroup, toolGroupSpecification);
+            
             toolGroupButtons.Add(toolGroupSpecification.Id.ToLower(), button);
         }
 

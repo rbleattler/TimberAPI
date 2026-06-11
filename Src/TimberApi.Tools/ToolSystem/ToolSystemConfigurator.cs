@@ -3,14 +3,13 @@ using Bindito.Core;
 namespace TimberApi.Tools.ToolSystem;
 
 [Context("Game")]
-[Context("MapEditor")]
-public class ToolSystemConfigurator : IConfigurator
+// [Context("MapEditor")]
+public class ToolSystemConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.Bind<ToolService>().AsSingleton();
-        containerDefinition.Bind<ToolSpecificationDeserializer>().AsSingleton();
-        containerDefinition.Bind<ToolFactoryService>().AsSingleton();
-        containerDefinition.Bind<ToolSpecificationService>().AsSingleton();
+        Bind<ToolService>().AsSingleton();
+        Bind<ToolFactoryService>().AsSingleton();
+        Bind<ToolSpecService>().AsSingleton();
     }
 }

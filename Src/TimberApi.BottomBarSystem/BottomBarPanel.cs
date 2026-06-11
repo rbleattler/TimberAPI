@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using TimberApi.Extensions;
 using TimberApi.Tools.ToolGroupSystem;
 using TimberApi.Tools.ToolSystem;
+using TimberApi.Tools.ToolUI;
 using Timberborn.BottomBarSystem;
-using Timberborn.Persistence;
 using Timberborn.SingletonSystem;
 using Timberborn.ToolSystem;
 using Timberborn.UILayoutSystem;
@@ -22,9 +21,9 @@ public class BottomBarPanel : ILoadableSingleton
 
     private readonly SortedDictionary<int, VisualElement> _mainWrapperSections = new();
 
-    private readonly ToolGroupService _toolGroupService;
+    private readonly TimberApi.Tools.ToolGroupSystem.ToolGroupService _toolGroupService;
 
-    private readonly ToolService _toolService;
+    private readonly TimberApi.Tools.ToolSystem.ToolService _toolService;
 
     private readonly UILayout _uiLayout;
 
@@ -34,7 +33,7 @@ public class BottomBarPanel : ILoadableSingleton
         BottomBarService bottomBarService,
         BottomBarUiService bottomBarUiService,
         UILayout uiLayout,
-        ToolButtonFactory toolButtonFactory, ToolService toolService, ToolGroupService toolGroupService)
+        ToolButtonFactory toolButtonFactory, TimberApi.Tools.ToolSystem.ToolService toolService, TimberApi.Tools.ToolGroupSystem.ToolGroupService toolGroupService)
     {
         _bottomBarUiService = bottomBarUiService;
         _uiLayout = uiLayout;
@@ -60,12 +59,18 @@ public class BottomBarPanel : ILoadableSingleton
 
     private void InitializeButtons()
     {
-        foreach (var bottomBarButton in _bottomBarService.ToolItemButtons.Where(button => !button.Hidden)
-                     .OrderBy(button => button.Order))
+        foreach (var bottomBarButton in _bottomBarService.ToolItemButtons.Where(button => !button.Hidden).OrderBy(button => button.Order))
+        {
             if (bottomBarButton.IsGroup)
+            {
                 HandleGroupButton(bottomBarButton);
+            }
             else
+            {
                 HandleToolButton(bottomBarButton);
+            }
+                
+        }
     }
 
     private void HandleGroupButton(BottomBarButton bottomBarButton)
@@ -75,8 +80,7 @@ public class BottomBarPanel : ILoadableSingleton
         var section = GetBottomBarSection(bottomBarButton);
 
         AddElementToBottomBar(toolGroupButton.Root, _bottomBarService.GetGroupRow(bottomBarButton.Id), section);
-        AddElementToBottomBar(toolGroupButton.ToolButtonsElement, _bottomBarService.GetGroupRow(bottomBarButton.Id) + 1,
-            section);
+        AddElementToBottomBar(toolGroupButton.ToolButtonsElement, _bottomBarService.GetGroupRow(bottomBarButton.Id) + 1, section);
 
         if (bottomBarButton.GroupId != null)
             _toolGroupService.GetToolGroupButton(bottomBarButton.GroupId).AddToolGroupButton(toolGroupButton);
@@ -85,7 +89,7 @@ public class BottomBarPanel : ILoadableSingleton
     private void HandleToolButton(BottomBarButton bottomBarButton)
     {
         var toolButton = _toolService.GetToolButton(bottomBarButton.Id);
-
+        
         if (bottomBarButton.GroupId is null)
         {
             AddElementToBottomBar(toolButton.Root, 0, GetBottomBarSection(bottomBarButton));
@@ -100,11 +104,7 @@ public class BottomBarPanel : ILoadableSingleton
 
     private int GetBottomBarSection(BottomBarButton bottomBarButton)
     {
-        if (bottomBarButton.ButtonInformation == null) return 1;
-
-        var objectLoader = ObjectLoader.CreateBasicLoader(bottomBarButton.ButtonInformation);
-
-        return objectLoader.GetValueOrDefault(new PropertyKey<int>("BottomBarSection"), 1);
+        return bottomBarButton.BottomBarSpec?.Section ?? 1;
     }
 
     private void InitializeSections()
@@ -142,6 +142,9 @@ public class BottomBarPanel : ILoadableSingleton
 
     private void AddPanelsToWrapper()
     {
-        foreach (var bottomBarPanelPair in _bottomBarPanels.Reverse()) _bottomBarWrapper.Add(bottomBarPanelPair.Value);
+        foreach (var bottomBarPanelPair in _bottomBarPanels.Reverse())
+        {
+            _bottomBarWrapper.Add(bottomBarPanelPair.Value);
+        }
     }
 }

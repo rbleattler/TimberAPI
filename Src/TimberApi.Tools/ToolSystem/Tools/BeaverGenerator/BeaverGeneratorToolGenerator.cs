@@ -5,28 +5,33 @@ using Timberborn.BeaversUI;
 
 namespace TimberApi.Tools.ToolSystem.Tools.BeaverGenerator;
 
-internal class BeaverGeneratorToolGenerator : ISpecificationGenerator
+internal class BeaverGeneratorToolGenerator : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "BeaverGenerator",
-            Type = "GenericTool",
-            Layout = "GrouplessRed",
-            Order = 60,
-            NameLocKey = "Cursor",
-            DescriptionLocKey = "Cursor",
-            Icon = "Sprites/BottomBar/BeaverGeneratorTool",
-            DevMode = true,
-            Hidden = false,
-            ToolInformation = new
+            ToolSpec = new
             {
-                BottomBarSection = 0,
+                Id = "BeaverGenerator",
+                Type = "GenericTool",
+                Layout = "GrouplessRed",
+                Order = 60,
+                NameLocKey = "Tool.FixedName",
+                DescriptionLocKey = "Tool.FixedDescription",
+                Icon = "Sprites/BottomBar/BeaverGeneratorTool",
+                DevMode = true,
+                Hidden = false,
+            },
+            GenericToolSpec = new {
                 ClassName = typeof(BeaverGeneratorTool).FullName
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
             }
         });
 
-        yield return new GeneratedSpecification("tools", "ToolSpecification.BeaverGenerator", json);
+        yield return new GeneratedSpec("tools", "Tool.BeaverGenerator", json);
     }
 }

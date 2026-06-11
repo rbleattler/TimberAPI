@@ -4,11 +4,11 @@ using TimberApi.SpecificationSystem;
 namespace TimberApi.Tools.ToolSystem.Tools.BuilderPriority;
 
 [Context("Game")]
-public class BuilderPriorityToolConfigurator : IConfigurator
+public class BuilderPriorityToolConfigurator : Configurator
 {
-    public void Configure(IContainerDefinition containerDefinition)
+    protected override void Configure()
     {
-        containerDefinition.MultiBind<IToolFactory>().To<BuilderPriorityToolFactory>().AsSingleton();
-        containerDefinition.MultiBind<ISpecificationGenerator>().To<BuilderPriorityToolGenerator>().AsSingleton();
+        MultiBind<IToolFactory>().To<BuilderPriorityToolFactory>().AsSingleton();
+        MultiBind<ISpecGenerator>().To<BuilderPriorityToolGenerator>().AsSingleton();
     }
 }

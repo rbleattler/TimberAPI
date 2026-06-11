@@ -5,83 +5,98 @@ using Timberborn.ForestryUI;
 
 namespace TimberApi.Tools.ToolSystem.Tools.TreeCuttingArea;
 
-public class TreeCuttingAreaToolGenerator : ISpecificationGenerator
+public class TreeCuttingAreaToolGenerator : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
         yield return CreateCuttingTreeGroup();
         yield return TreeCuttingAreaSelectionTool();
         yield return TreeCuttingAreaUnselectionTool();
     }
 
-    private static GeneratedSpecification TreeCuttingAreaUnselectionTool()
+    private static GeneratedSpec TreeCuttingAreaUnselectionTool()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "TreeCuttingAreaUnselection",
-            GroupId = "TreeCutting",
-            Type = "GenericTool",
-            Layout = "Default",
-            Order = 1000,
-            NameLocKey = "CAN NOT BE MODIFIED",
-            DescriptionLocKey = "CAN NOT BE MODIFIED",
-            Icon = "Sprites/BottomBar/CancelToolIcon",
-            DevMode = false,
-            Hidden = false,
-            ToolInformation = new
+            ToolSpec = new
             {
-                BottomBarSection = 0,
+                Id = "TreeCuttingAreaUnselection",
+                GroupId = "TreeCutting",
+                Type = "GenericTool",
+                Layout = "Default",
+                Order = 1000,
+                NameLocKey = "Tool.FixedName",
+                DescriptionLocKey = "Tool.FixedDescription",
+                Icon = "Sprites/BottomBar/CancelToolIcon",
+                DevMode = false,
+                Hidden = false,
+            },
+            GenericToolSpec = new
+            {
                 ClassName = typeof(TreeCuttingAreaUnselectionTool).FullName
-            }
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
+            },
         });
 
-        return new GeneratedSpecification("Tools", "ToolSpecification.TreeCuttingAreaUnselection", json);
+        return new GeneratedSpec("Tools", "Tool.TreeCuttingAreaUnselection", json);
     }
 
-    private static GeneratedSpecification TreeCuttingAreaSelectionTool()
+    private static GeneratedSpec TreeCuttingAreaSelectionTool()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "TreeCuttingAreaSelection",
-            GroupId = "TreeCutting",
-            Type = "GenericTool",
-            Layout = "Default",
-            Order = 0,
-            NameLocKey = "CAN NOT BE MODIFIED",
-            DescriptionLocKey = "CAN NOT BE MODIFIED",
-            Icon = "Sprites/BottomBar/TreeCuttingAreaSelectionTool",
-            DevMode = false,
-            Hidden = false,
-            ToolInformation = new
+            ToolSpec = new
             {
-                BottomBarSection = 0,
+                Id = "TreeCuttingAreaSelection",
+                GroupId = "TreeCutting",
+                Type = "GenericTool",
+                Layout = "Default",
+                Order = 0,
+                NameLocKey = "Tool.FixedName",
+                DescriptionLocKey = "Tool.FixedDescription",
+                Icon = "Sprites/BottomBar/TreeCuttingAreaSelectionTool",
+                DevMode = false,
+                Hidden = false,
+            },
+            GenericToolSpec = new
+            {
                 ClassName = typeof(TreeCuttingAreaSelectionTool).FullName
-            }
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
+            },
         });
 
-        return new GeneratedSpecification("Tools", "ToolSpecification.TreeCuttingAreaSelection", json);
+        return new GeneratedSpec("Tools", "Tool.TreeCuttingAreaSelection", json);
     }
 
-    private static GeneratedSpecification CreateCuttingTreeGroup()
+    private static GeneratedSpec CreateCuttingTreeGroup()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "TreeCutting",
-            Layout = "Blue",
-            Order = 10,
-            Type = "TreeCuttingAreaToolGroup",
-            NameLocKey = "ToolGroups.TreeCutting",
-            Icon = "Sprites/BottomBar/TreeToolGroupIcon",
-            Section = "BottomBar",
-            DevMode = false,
-            Hidden = false,
-            FallbackGroup = false,
-            GroupInformation = new
+            TimberApiToolGroupSpec = new
             {
-                BottomBarSection = 0
+                Id = "TreeCutting",
+                Order = 10,
+                NameLocKey = "ToolGroups.TreeCutting",
+                Icon = "Sprites/BottomBar/TreeToolGroupIcon",
+                FallbackGroup = false,
+                Type = "TreeCuttingAreaToolGroup",
+                Layout = "Blue",
+                Section = "BottomBar",
+                DevMode = false,
+                Hidden = false,
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
             }
         });
 
-        return new GeneratedSpecification("Tools", "ToolGroupSpecification.TreeCutting", json);
+        return new GeneratedSpec("ToolGroups", "TimberApiToolGroups.TreeCutting", json);
     }
 }

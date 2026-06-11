@@ -5,28 +5,33 @@ using Timberborn.WaterBrushesUI;
 
 namespace TimberApi.Tools.ToolSystem.Tools.WaterGenerator;
 
-public class WaterGeneratorToolGenerator : ISpecificationGenerator
+public class WaterGeneratorToolGenerator : ISpecGenerator
 {
-    public IEnumerable<GeneratedSpecification> Generate()
+    public IEnumerable<GeneratedSpec> Generate()
     {
         var json = JsonConvert.SerializeObject(new
         {
-            Id = "WaterGenerator",
-            Type = "GenericTool",
-            Layout = "GrouplessRed",
-            Order = 80,
-            NameLocKey = "Cursor",
-            DescriptionLocKey = "Cursor",
-            Icon = "Sprites/BottomBar/WaterHeightBrushTool",
-            DevMode = true,
-            Hidden = false,
-            ToolInformation = new
+            ToolSpec = new
             {
-                BottomBarSection = 0,
+                Id = "WaterGenerator",
+                Type = "GenericTool",
+                Layout = "GrouplessRed",
+                Order = 80,
+                NameLocKey = "Tool.FixedName",
+                DescriptionLocKey = "Tool.FixedDescription",
+                Icon = "Sprites/BottomBar/WaterHeightBrushTool",
+                DevMode = true,
+                Hidden = false,
+            },
+            GenericToolSpec = new {
                 ClassName = typeof(WaterHeightBrushTool).FullName
-            }
+            },
+            BottomBarSpec = new
+            {
+                Section = 0,
+            },
         });
 
-        yield return new GeneratedSpecification("Root", "ToolSpecification.WaterGenerator", json);
+        yield return new GeneratedSpec("Root", "Tool.WaterGenerator", json);
     }
 }
